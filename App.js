@@ -1,21 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+
+import Home from './app/screens/Home';
+import ThemeContext from './app/context/Theme'
+import ThemeStorage from './app/context/Storage'
+import { NavigationContainer } from '@react-navigation/native';
+import StackNavigator from './app/navigation/StackNavigator'
+
 
 export default function App() {
+    const [ theme, setTheme ] = useState('light')
+    const restoreToken  = async()=>{
+      const token = await ThemeStorage.getToken();
+      if(!token)return
+      setTheme(token)
+    }
+  
+    useEffect(()=>{
+      restoreToken()
+    },[])
+  
+  
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeContext.Provider value={{theme, setTheme}}>
+        <NavigationContainer>
+           <StackNavigator/>
+        </NavigationContainer>
+    </ThemeContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
